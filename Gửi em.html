@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gửi em</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#e9ecf5; --paper:#fffdfa; --ink:#262b45; --soft:#6b7090; --rose:#c4727f; --env:#d9ddee; --env-dark:#c6cce4; --shadow:rgba(38,43,69,.18);
+  color-scheme:light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#14172a; --paper:#1f2340; --ink:#eceaf5; --soft:#9aa0c4; --rose:#e39aa6; --env:#2b3052; --env-dark:#363c64; --shadow:rgba(0,0,0,.45);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#14172a; --paper:#1f2340; --ink:#eceaf5; --soft:#9aa0c4; --rose:#e39aa6; --env:#2b3052; --env-dark:#363c64; --shadow:rgba(0,0,0,.45);
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{
+  margin:0;min-height:100%;background:var(--bg);color:var(--ink);
+  font-family:"Lora",Georgia,"Times New Roman",serif;
+  display:flex;align-items:center;justify-content:center;padding:24px 18px;
+}
+.stage{width:100%;max-width:460px;position:relative}
+
+/* Envelope */
+.envelope{
+  display:block;width:100%;aspect-ratio:3/2;border:0;padding:0;cursor:pointer;
+  background:var(--env);border-radius:6px;position:relative;
+  box-shadow:0 18px 40px -12px var(--shadow);
+  transition:opacity .6s ease .5s, transform .6s ease .5s;
+  font:inherit;color:inherit;
+}
+.envelope::before{ /* body fold */
+  content:"";position:absolute;inset:0;border-radius:6px;
+  background:linear-gradient(to top right,transparent 49.6%,var(--env-dark) 50%) left/50% 100% no-repeat,
+             linear-gradient(to top left,transparent 49.6%,var(--env-dark) 50%) right/50% 100% no-repeat;
+  opacity:.55;
+}
+.flap{
+  position:absolute;left:0;right:0;top:0;height:58%;background:var(--env-dark);
+  clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:top;
+  transition:transform .6s ease;
+}
+.seal{
+  position:absolute;left:50%;top:58%;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;
+  background:var(--rose);display:grid;place-items:center;color:#fff;
+  font-family:"Dancing Script",cursive;font-size:24px;line-height:1;
+  box-shadow:0 4px 10px -2px var(--shadow);transition:opacity .3s ease;
+}
+.hint{
+  position:absolute;left:0;right:0;bottom:14px;text-align:center;color:var(--soft);font-size:.9rem;font-style:italic;
+}
+.envelope:focus-visible{outline:3px solid var(--rose);outline-offset:4px}
+.envelope:hover .flap{transform:rotateX(14deg)}
+
+/* Letter */
+.letter{
+  display:none;position:relative;overflow:hidden;background:var(--paper);border-radius:4px;padding:40px 32px 36px;
+  box-shadow:0 22px 48px -14px var(--shadow);
+  background-image:repeating-linear-gradient(to bottom,transparent 0 33px,color-mix(in srgb,var(--soft) 16%,transparent) 33px 34px);
+  background-position:0 44px;
+}
+.letter p{margin:0 0 17px;font-size:1.08rem;line-height:34px;margin-bottom:0;text-wrap:pretty}
+.letter p+p{margin-top:0}
+.letter .gap{height:17px}
+.to{font-family:"Dancing Script",cursive;font-size:1.9rem;color:var(--rose);line-height:44px;margin:0 0 6px;}
+.sign{font-family:"Dancing Script",cursive;font-size:1.9rem;color:var(--rose);margin-top:14px;text-align:right;line-height:44px}
+
+.sign svg{width:20px;height:20px;vertical-align:-3px;margin-left:6px;fill:var(--rose)}
+.deco{position:absolute;width:96px;height:96px;pointer-events:none}
+.deco.tr{top:6px;right:6px}
+.deco.bl{bottom:6px;left:6px;width:72px;height:72px;transform:rotate(180deg);opacity:.8}
+body{background:radial-gradient(ellipse at 50% 28%,#2b3260 0%,#171b34 55%,#0e1022 100%) fixed}
+body::before{content:"";position:fixed;inset:calc(env(safe-area-inset-top,0px) + 12px) 12px calc(env(safe-area-inset-bottom,0px) + 12px) 12px;border:1px solid rgba(214,185,120,.32);pointer-events:none;z-index:3}
+.stage{z-index:1}
+.stage:not(.opened){animation:float 5s ease-in-out infinite}
+.envelope{background:linear-gradient(160deg,#f4f0e6,#e5dfcf);border-radius:3px;box-shadow:0 28px 54px -12px rgba(0,0,0,.65),inset 0 0 0 9px #f1ede4,inset 0 0 0 10px rgba(176,141,70,.65)}
+.envelope::before{background:linear-gradient(to top right,transparent 49.6%,rgba(120,100,60,.14) 50%) left/50% 100% no-repeat,linear-gradient(to top left,transparent 49.6%,rgba(120,100,60,.14) 50%) right/50% 100% no-repeat;opacity:1}
+.flap{background:#e2dac7;filter:drop-shadow(0 2px 2px rgba(80,60,20,.2))}
+.seal{width:54px;height:54px;margin:-27px 0 0 -27px;background:radial-gradient(circle at 35% 30%,#bd4656,#7a1f2e 70%);color:#f1d79b;font-size:22px;border:2px solid rgba(241,215,155,.5);animation:glow 2.6s ease-out infinite;cursor:pointer}
+.address{position:absolute;left:0;right:0;top:73%;text-align:center;font-family:"Dancing Script",cursive;font-size:1.6rem;color:#4b3e26;line-height:1}
+.hint{color:#8a7a5a;bottom:14px;font-size:.82rem;animation:breathe 3s ease-in-out infinite}
+.letter{border:1px solid rgba(214,185,120,.45)}
+.petals{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:2}
+.dust{position:absolute;bottom:-10px;width:3px;height:3px;border-radius:50%;background:#e8cf93;opacity:0;animation:drift linear infinite}
+.petal{position:absolute;top:-24px;width:12px;height:16px;border-radius:80% 0 80% 0;background:#e8a5b1;opacity:.9;animation:fall linear forwards}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes glow{0%,100%{box-shadow:0 4px 10px -2px rgba(0,0,0,.5),0 0 0 0 rgba(189,70,86,.5)}60%{box-shadow:0 4px 10px -2px rgba(0,0,0,.5),0 0 0 14px rgba(189,70,86,0)}}
+@keyframes breathe{0%,100%{opacity:.5}50%{opacity:1}}
+@keyframes drift{0%{transform:translate(0,0);opacity:0}15%{opacity:.75}85%{opacity:.45}100%{transform:translate(var(--dx),-105vh);opacity:0}}
+@keyframes fall{0%{transform:translate(0,0) rotate(0)}100%{transform:translate(var(--dx),108vh) rotate(540deg);opacity:.6}}
+.opened .envelope{opacity:0;transform:translateY(24px);pointer-events:none;position:absolute;inset:0}
+.opened .flap{transform:rotateX(180deg)}
+.opened .seal{opacity:0}
+.opened .letter{display:block}
+.opened .letter>*{animation:rise .9s ease both}
+.opened .letter>*:nth-child(1){animation-delay:.9s}
+.opened .letter>*:nth-child(2){animation-delay:1.3s}
+.opened .letter>*:nth-child(3){animation-delay:1.9s}
+.opened .letter>*:nth-child(4){animation-delay:2.4s}
+.opened .letter>*:nth-child(5){animation-delay:2.9s}
+.opened .letter>*:nth-child(6){animation-delay:3.4s}
+.opened .letter>*:nth-child(7){animation-delay:3.9s}
+.opened .letter>*:nth-child(8){animation-delay:4.4s}
+.opened .letter>*:nth-child(9){animation-delay:4.9s}
+.sign{width:fit-content;margin-left:auto}
+.opened .letter{animation:unfold 1s cubic-bezier(.2,.7,.2,1) .5s both;transform-origin:top center}
+.opened .letter>.sign{animation:write 1.8s ease 4.2s both}
+.opened .letter>.deco.tr{--o:1;animation:bloom 1.4s ease 4.6s both,sway 7s ease-in-out 6s infinite}
+.opened .letter>.deco.bl{--o:.8;animation:bloom 1.4s ease 5s both,sway 8s ease-in-out 6.4s infinite}
+.sign svg{animation:beat 1.6s ease-in-out 6.2s infinite;transform-origin:50% 55%}
+@keyframes unfold{from{opacity:0;transform:perspective(900px) rotateX(-18deg) translateY(14px)}to{opacity:1;transform:none}}
+@keyframes write{from{clip-path:inset(0 100% 0 0);opacity:0}to{clip-path:inset(0 0 0 0);opacity:1}}
+@keyframes bloom{from{opacity:0;scale:.3}to{opacity:var(--o,1);scale:1}}
+@keyframes sway{0%,100%{rotate:0deg}50%{rotate:5deg}}
+@keyframes beat{0%,100%{transform:scale(1)}50%{transform:scale(1.25)}}
+@media (prefers-reduced-motion:reduce){*,*::before{animation:none!important}.petals{display:none}}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){
+  .opened .letter>*{animation:none}
+  .envelope,.flap{transition:none}
+}
+@media (max-width:380px){.letter{padding:32px 22px 28px}.letter p{font-size:1rem}}
+</style>
+</head>
+<body>
+<main class="stage" id="stage">
+  <button class="envelope" id="open" aria-label="Mở thư">
+    <span class="flap"></span>
+    <span class="seal">HA</span>
+    <span class="address">Gửi em</span>
+    <span class="hint">Chạm vào con dấu để mở thư</span>
+  </button>
+
+  <article class="letter" aria-live="polite">
+    <p class="to">Gửi em,</p>
+    <p>Hôm nay anh rất vui vì được gặp em.</p>
+    <p>Anh không muốn vội vàng gọi tên điều gì giữa chúng ta.</p>
+    <p>Chỉ là sau những lần trò chuyện, anh cảm thấy em là một người đáng để anh dành thời gian tìm hiểu nhiều hơn.</p>
+    <p>Anh mong chúng ta có thể tiếp tục làm quen, chia sẻ với nhau nhiều hơn và xem mọi thứ sẽ phát triển đến đâu.</p>
+    <p>Không cần phải vội, cứ để mọi thứ tự nhiên nhé.</p>
+    <p class="sign">Huỳnh Anh<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-8-5.2-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 5.8-8 11-8 11z"/></svg></p>
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="sprig" viewBox="0 0 80 80"><path d="M68 12C50 26 34 44 14 76" fill="none" stroke="var(--soft)" stroke-width="1.5" stroke-linecap="round" opacity=".6"/><path d="M52 26q-14-2-18-14 14 0 18 14z" fill="var(--soft)" opacity=".35"/><path d="M38 46q-14 2-22-8 14-4 22 8z" fill="var(--soft)" opacity=".35"/><path d="M28 62q-10 4-18-2 10-6 18 2z" fill="var(--soft)" opacity=".35"/><g transform="translate(67 13)" fill="var(--rose)"><ellipse rx="4" ry="7" cy="-7"/><ellipse rx="4" ry="7" cy="-7" transform="rotate(72)"/><ellipse rx="4" ry="7" cy="-7" transform="rotate(144)"/><ellipse rx="4" ry="7" cy="-7" transform="rotate(216)"/><ellipse rx="4" ry="7" cy="-7" transform="rotate(288)"/><circle r="3.4" fill="#f1d79b"/></g></symbol></svg>
+    <svg class="deco tr" aria-hidden="true"><use href="#sprig"/></svg>
+    <svg class="deco bl" aria-hidden="true"><use href="#sprig"/></svg>
+  </article>
+</main>
+<script>
+  var stage=document.getElementById('stage');
+  var calm=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var layer=document.createElement('div');layer.className='petals';layer.setAttribute('aria-hidden','true');document.body.appendChild(layer);
+  function spawn(cls,n,dur,keep){
+    if(calm)return;
+    for(var i=0;i<n;i++){
+      (function(){
+        var s=document.createElement('span');s.className=cls;
+        var d=dur*(0.7+Math.random()*0.6),w=Math.random()*dur;
+        s.style.left=(Math.random()*100)+'%';
+        s.style.animationDuration=d+'s';s.style.animationDelay=w+'s';
+        s.style.setProperty('--dx',(Math.random()*120-60)+'px');
+        if(cls==='petal'){var z=0.7+Math.random()*0.8;s.style.width=(12*z)+'px';s.style.height=(16*z)+'px';}
+        layer.appendChild(s);
+        if(!keep)setTimeout(function(){s.remove()},(d+w)*1000+200);
+      })();
+    }
+  }
+  spawn('dust',16,14,true);
+  function burst(){spawn('petal',18,7,false);}
+  document.getElementById('open').addEventListener('click',function(){
+    stage.classList.add('opened');burst();
+    var l=stage.querySelector('.letter');
+    l.setAttribute('tabindex','-1');
+    setTimeout(function(){l.focus({preventScroll:true})},900);
+  });
+</script>
+</body>
+</html>
